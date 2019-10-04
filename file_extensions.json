@@ -1,6 +1,8 @@
 {
     "image": [
         "ai",
+        "eps",
+        "jfif",
         "bmp",
         "gif",
         "ico",
@@ -64,6 +66,8 @@
         "cgi",
         "pl",
         "css",
+        "sass",
+        "scss",
         "htm",
         "js",
         "jsp",

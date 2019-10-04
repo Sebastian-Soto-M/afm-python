@@ -11,13 +11,14 @@ from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
 
-class MyHandler(FileSystemEventHandler):
-    def on_modified(self, event):
-        for filename in os.listdir(folder_to_track):
-            i = 1
-            if not os.path.isdir(os.path.join(folder_to_track, filename)):
-                extension = str(os.path.splitext(
-                    folder_to_track + '/' + filename)[1]).strip('.')
+def run():
+    for filename in os.listdir(folder_to_track):
+        i = 1
+        if not os.path.isdir(os.path.join(folder_to_track, filename)):
+            extension = str(os.path.splitext(
+                folder_to_track + '/' + filename)[1]).strip('.')
+
+            if extension != 'crdownload':
                 f = FileTypeFactory.factory(extension)
                 path = f.get_path()
 
@@ -36,6 +37,11 @@ class MyHandler(FileSystemEventHandler):
                 new_name = os.path.join(nfile_path)
 
                 os.rename(src, new_name)
+
+
+class MyHandler(FileSystemEventHandler):
+    def on_modified(self, event):
+        run()
 
 
 folder_to_track = os.path.join(os.path.expanduser('~'), "Downloads")
@@ -113,6 +119,7 @@ def load_animation():
 try:
     t_anim = threading.Thread(target=load_animation)
     t_anim.start()
+    run()
     while running:
         time.sleep(10)
 except KeyboardInterrupt:
