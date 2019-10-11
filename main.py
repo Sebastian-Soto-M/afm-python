@@ -13,7 +13,7 @@ from watchdog.observers import Observer
 
 def run():
     for filename in os.listdir(folder_to_track):
-        i = 1
+        i = 0
         if not os.path.isdir(os.path.join(folder_to_track, filename)):
             extension = str(os.path.splitext(
                 folder_to_track + '/' + filename)[1]).strip('.')
@@ -26,12 +26,13 @@ def run():
                     os.makedirs(path)
 
                 nname = filename
-                nfile_path = os.path.join(path, nname)
 
-                f_exists = os.path.isfile(nfile_path)
-
-                while f_exists:
+                while os.path.isfile(os.path.join(path, nname)):
                     i += 1
+                    fn = nname.split('.')[0].split('_')[0]
+                    nname = fn + '_' + str(i) + '.' + extension
+
+                nfile_path = os.path.join(path, nname)
 
                 src = os.path.join(folder_to_track, filename)
                 new_name = os.path.join(nfile_path)
