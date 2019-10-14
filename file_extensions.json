@@ -1,20 +1,21 @@
 {
     "image": [
+        "CR2",
         "ai",
-        "eps",
-        "jfif",
         "bmp",
+        "eps",
+        "exr",
         "gif",
         "ico",
-        "jpg",
+        "jfif",
         "jpeg",
+        "jpg",
         "png",
         "ps",
         "psd",
         "svg",
         "tif",
-        "tiff",
-        "CR2"
+        "tiff"
     ],
     "audio": [
         "cda",
