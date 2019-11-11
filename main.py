@@ -118,14 +118,15 @@ def load_animation():
     print()
 
 
-try:
-    t_anim = threading.Thread(target=load_animation)
-    t_anim.start()
-    run()
-    while running:
-        time.sleep(10)
-except KeyboardInterrupt:
-    running = False
-    observer.stop()
+if __name__ == '__main__':
+    try:
+        t_anim = threading.Thread(target=load_animation)
+        t_anim.start()
+        run()
+        while running:
+            time.sleep(10)
+    except KeyboardInterrupt:
+        running = False
+        observer.stop()
 
-observer.join()
+    observer.join()

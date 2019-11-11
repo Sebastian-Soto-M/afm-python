@@ -1,10 +1,9 @@
 import os
 import json
-from abc import ABC, abstractmethod
 from os.path import join, expanduser
 
 
-class FileType(ABC):
+class FileType():
     def __init__(self, extension):
         self.target_folder = 'Downloads'
         self.extension = extension
@@ -13,10 +12,6 @@ class FileType(ABC):
 
     def create_path(self, parent_folder):
         return join(self.path, parent_folder, self.extension)
-
-    @abstractmethod
-    def get_path(self):
-        pass
 
 
 class Image(FileType):
@@ -126,7 +121,7 @@ class Text(FileType):
 class FileTypeFactory(object):
     def factory(extension):
         pfolder = os.path.dirname(os.path.abspath(__file__))
-        with open(join(pfolder,'file_extensions.json')) as json_file:
+        with open(join(pfolder, 'file_extensions.json')) as json_file:
             file_extensions = json.load(json_file)
         if extension in file_extensions['image']:
             return Image(extension)
