@@ -118,6 +118,14 @@ class Text(FileType):
         return super().create_path('text_files')
 
 
+class Git(FileType):
+    def __init__(self, extension):
+        super().__init__(extension)
+
+    def get_path(self):
+        return super().create_path('git')
+
+
 class FileTypeFactory(object):
     def factory(extension):
         pfolder = os.path.dirname(os.path.abspath(__file__))
@@ -147,5 +155,7 @@ class FileTypeFactory(object):
             return Text(extension)
         if extension in file_extensions['audio']:
             return Audio(extension)
+        if extension in file_extensions['git']:
+            return Git(extension)
         else:
             return Uncategorized(extension)
