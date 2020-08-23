@@ -21,6 +21,7 @@ class File():
             for e in exts:
                 if self.extension in exts[e]:
                     return osp.join(e, self.extension)
+            return osp.join('uncategorized', self.extension)
 
     @property
     def destination(self):
