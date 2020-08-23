@@ -1,5 +1,6 @@
 import pdb
 import os
+from os import path as osp
 import json
 
 
@@ -11,18 +12,19 @@ class File():
         self.target = self.__get_path()
 
     def __repr__(self):
-        return f'{os.path.join(self.parent, self.ne)}'
+        return f'{osp.join(self.parent, self.ne)}'
 
     def __get_path(self):
-        with open('file_extensions.json') as data:
+        with open(osp.join(osp.abspath(osp.dirname(__file__)),
+                           'file_extensions.json')) as data:
             exts = json.load(data)
             for e in exts:
                 if self.extension in exts[e]:
-                    return os.path.join(e, self.extension)
+                    return osp.join(e, self.extension)
 
     @property
     def destination(self):
-        return os.path.join(self.parent, self.target, self.ne)
+        return osp.join(self.parent, self.target, self.ne)
 
     @property
     def ne(self):
@@ -33,20 +35,20 @@ class Directory():
     def __init__(self, path):
         self.path = path
         self.files = [self.__get_file_info(f) for f in os.listdir(
-            path) if not os.path.isdir(os.path.join(path, f))]
+            path) if not osp.isdir(osp.join(path, f))]
 
     def __move_file(self, f: File):
         original = f.__repr__()
         i = 0
-        while os.path.isfile(f.destination):
+        while osp.isfile(f.destination):
             i += 1
             f.name = '_'.join([str(i), f.name])
         os.rename(original, f.destination)
 
     def organize(self):
         for f in self.files:
-            ndir = os.path.join(self.path, f.target)
-            if not os.path.exists(ndir):
+            ndir = osp.join(self.path, f.target)
+            if not osp.exists(ndir):
                 os.makedirs(ndir)
             self.__move_file(f)
 
@@ -56,4 +58,4 @@ class Directory():
         return File(self.path, fn, i[-1])
 
 
-Directory(os.path.join(os.path.expanduser("~"), "test")).organize()
+Directory(osp.join(osp.expanduser("~"), "Downloads")).organize()
