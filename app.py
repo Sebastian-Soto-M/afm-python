@@ -40,11 +40,11 @@ class Directory():
 
     def __move_file(self, f: File):
         original = f.__repr__()
-        i = 0
-        pdb.set_trace()
-        while osp.isfile(f.destination):
-            i += 1
-            f.name = '_'.join([str(i), f.name])
+        if osp.isfile(f.destination):
+            info = [f.name, 0]
+            while osp.isfile(f.destination):
+                info[1] += 1
+                f.name = '-'.join([str(x) for x in info])
         os.rename(original, f.destination)
 
     def organize(self):
