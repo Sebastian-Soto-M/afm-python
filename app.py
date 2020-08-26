@@ -9,7 +9,7 @@ class File():
         self.parent = parent
         self.name = name
         self.extension = extension
-        self.target = self.__get_path()
+        self.target = osp.join(self.parent, self.__get_path())
 
     def __repr__(self):
         return f'{osp.join(self.parent, self.ne)}'
@@ -25,7 +25,7 @@ class File():
 
     @property
     def destination(self):
-        return osp.join(self.parent, self.target, self.ne)
+        return osp.join(self.target, self.ne)
 
     @property
     def ne(self):
@@ -41,6 +41,7 @@ class Directory():
     def __move_file(self, f: File):
         original = f.__repr__()
         i = 0
+        pdb.set_trace()
         while osp.isfile(f.destination):
             i += 1
             f.name = '_'.join([str(i), f.name])
@@ -48,7 +49,7 @@ class Directory():
 
     def organize(self):
         for f in self.files:
-            ndir = osp.join(self.path, f.target)
+            ndir = f.target
             if not osp.exists(ndir):
                 os.makedirs(ndir)
             self.__move_file(f)
