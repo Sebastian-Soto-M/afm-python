@@ -20,6 +20,7 @@
   ],
   "audio": [
     "cda",
+    "m3u",
     "mid",
     "midi",
     "mp3",
@@ -27,21 +28,20 @@
     "ogg",
     "wav",
     "wma",
-    "wpl",
-    "m3u"
+    "wpl"
   ],
   "text_files": [
-    "md",
-    "txt",
     "doc",
     "docx",
+    "md",
     "odt ",
     "pdf",
     "rtf",
     "tex",
+    "txt",
     "wks ",
-    "wps",
-    "wpd"
+    "wpd",
+    "wps"
   ],
   "video": [
     "3g2",
@@ -53,8 +53,8 @@
     "mkv",
     "mov",
     "mp4",
-    "mpg",
     "mpeg",
+    "mpg",
     "rm",
     "swf",
     "vob",
@@ -66,27 +66,28 @@
     "cer",
     "cfm",
     "cgi",
-    "pl",
     "css",
-    "sass",
-    "scss",
     "htm",
     "js",
     "jsp",
     "part",
     "php",
+    "pl",
     "rss",
+    "sass",
+    "scss",
     "xhtml"
   ],
   "compressed": [
     "7z",
     "arj",
     "deb",
+    "gz",
     "pkg",
     "rar",
     "rpm",
-    "gz",
     "tar",
+    "tgz",
     "xz",
     "z",
     "zip"
@@ -97,16 +98,16 @@
     "dat",
     "db",
     "dbf",
+    "json",
     "log",
     "mdb",
+    "ods",
     "sav",
     "sql",
-    "xml",
-    "json",
-    "ods",
     "xlr",
     "xls",
-    "xlsx"
+    "xlsx",
+    "xml"
   ],
   "executable": ["apk", "bat", "com", "exe", "gadget", "jar", "wsf"],
   "font": ["fnt", "fon", "otf", "ttf"],
@@ -115,6 +116,7 @@
     "bak",
     "cab",
     "cfg",
+    "conf",
     "cpl",
     "cur",
     "dll",
@@ -124,10 +126,10 @@
     "ini",
     "lnk",
     "msi",
+    "sh",
     "sys",
-    "tmp",
-    "conf",
-    "sh"
+    "tmp"
   ],
-  "git": ["diff"]
+  "git": ["diff"],
+  "vim": ["vba", "vim"]
 }
