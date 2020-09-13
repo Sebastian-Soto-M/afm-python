@@ -1,5 +1,5 @@
-import pdb
 import os
+import argparse
 from os import path as osp
 import json
 
@@ -33,8 +33,9 @@ class File():
 
 
 class Directory():
-    def __init__(self, path):
+    def __init__(self, path, verbose):
         self.path = path
+        self.verbose = verbose
         self.files = [self.__get_file_info(f) for f in os.listdir(
             path) if not osp.isdir(osp.join(path, f))]
 
@@ -45,6 +46,8 @@ class Directory():
             while osp.isfile(f.destination):
                 info[1] += 1
                 f.name = '-'.join([str(x) for x in info])
+        if self.verbose:
+            print(f"{original} -> {f.destination}")
         os.rename(original, f.destination)
 
     def organize(self):
@@ -60,4 +63,15 @@ class Directory():
         return File(self.path, fn, i[-1])
 
 
-Directory(osp.join(osp.expanduser("~"), "Downloads")).organize()
+def menu() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "path", help="the path of the folder to organize", type=str)
+    parser.add_argument(
+        "-v", "--verbose", help="provide a descriptive output", action="store_true")
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = menu()
+    Directory(args.path, args.verbose).organize()
