@@ -1,0 +1,215 @@
+#!/bin/env python
+import argparse
+import os
+from os import path as osp
+
+ftp = {
+    "image": [
+        "CR2",
+        "ai",
+        "bmp",
+        "eps",
+        "exr",
+        "gif",
+        "ico",
+        "jfif",
+        "jpeg",
+        "jpg",
+        "png",
+        "ps",
+        "psd",
+        "raw",
+        "svg",
+        "tif",
+        "tiff"
+    ],
+    "audio": [
+        "cda",
+        "m3u",
+        "mid",
+        "midi",
+        "mp3",
+        "mpa",
+        "ogg",
+        "wav",
+        "wma",
+        "wpl"
+    ],
+    "text_files": [
+        "doc",
+        "docx",
+        "md",
+        "odt ",
+        "pdf",
+        "rtf",
+        "tex",
+        "txt",
+        "wks ",
+        "wpd",
+        "wps"
+    ],
+    "video": [
+        "3g2",
+        "3gp",
+        "avi",
+        "flv",
+        "h264",
+        "m4v",
+        "mkv",
+        "mov",
+        "mp4",
+        "mpeg",
+        "mpg",
+        "rm",
+        "swf",
+        "vob",
+        "wmv"
+    ],
+    "internet": [
+        "asp",
+        "aspx",
+        "cer",
+        "cfm",
+        "cgi",
+        "css",
+        "htm",
+        "js",
+        "jsp",
+        "part",
+        "php",
+        "pl",
+        "rss",
+        "sass",
+        "scss",
+        "xhtml"
+    ],
+    "compressed": [
+        "7z",
+        "arj",
+        "deb",
+        "gz",
+        "pkg",
+        "rar",
+        "rpm",
+        "tar",
+        "tgz",
+        "xz",
+        "z",
+        "zip"
+    ],
+    "disc": ["bin", "dmg", "iso", "toast", "vcd"],
+    "data": [
+        "csv",
+        "dat",
+        "db",
+        "dbf",
+        "json",
+        "log",
+        "mdb",
+        "ods",
+        "sav",
+        "sql",
+        "xlr",
+        "xls",
+        "xlsx",
+        "xml"
+    ],
+    "executable": ["apk", "bat", "com", "exe", "gadget", "jar", "wsf"],
+    "font": ["fnt", "fon", "otf", "ttf"],
+    "presentation": ["key", "odp", "pps", "ppt", "pptx"],
+    "system": [
+        "bak",
+        "cab",
+        "cfg",
+        "conf",
+        "cpl",
+        "cur",
+        "dll",
+        "dmp",
+        "drv",
+        "icns",
+        "ini",
+        "lnk",
+        "msi",
+        "sh",
+        "sys",
+        "tmp"
+    ],
+    "git": ["diff"],
+    "vim": ["vba", "vim"]
+}
+
+
+class File():
+    def __init__(self, parent, name, extension):
+        self.parent = parent
+        self.name = name
+        self.extension = extension
+        self.target = osp.join(self.parent, self.__get_path())
+
+    def __repr__(self):
+        return f'{osp.join(self.parent, self.ne)}'
+
+    def __get_path(self):
+        for e in ftp:
+            if self.extension in ftp[e]:
+                return osp.join(e, self.extension)
+        return osp.join('uncategorized', self.extension)
+
+    @property
+    def destination(self):
+        return osp.join(self.target, self.ne)
+
+    @property
+    def ne(self):
+        return f'{self.name}.{self.extension}'
+
+
+class Directory():
+    def __init__(self, path, verbose):
+        self.path = path
+        self.verbose = verbose
+        self.files = [self.__get_file_info(f) for f in os.listdir(
+            path) if not osp.isdir(osp.join(path, f))]
+
+    def __move_file(self, f: File):
+        original = f.__repr__()
+        if osp.isfile(f.destination):
+            info = [f.name, 0]
+            while osp.isfile(f.destination):
+                info[1] += 1
+                f.name = '-'.join([str(x) for x in info])
+        if self.verbose:
+            print(f"{original} -> {f.destination}")
+        os.rename(original, f.destination)
+
+    def organize(self):
+        for f in self.files:
+            ndir = f.target
+            if not osp.exists(ndir):
+                os.makedirs(ndir)
+            self.__move_file(f)
+
+    def __get_file_info(self, fn: str) -> File:
+        i = fn.split('.')
+        fn = '.'.join(i[:-1])
+        return File(self.path, fn, i[-1])
+
+
+def menu() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "path", help="the path of the folder to organize", type=str)
+    parser.add_argument(
+        "-a", "--absolute", help="Use absolute path", action="store_true")
+    parser.add_argument(
+        "-v", "--verbose", help="provide a descriptive output", action="store_true")
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = menu()
+    pth = args.path
+    if args.absolute == None:
+        pth = osp.join(os.getcwd(), pth)
+    Directory(pth, args.verbose).organize()
