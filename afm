@@ -4,6 +4,7 @@ import os
 from os import path as osp
 
 ftp = {
+    "amigos": ["santi", "fabi"],
     "image": [
         "CR2",
         "ai",
@@ -210,6 +211,6 @@ def menu() -> argparse.Namespace:
 if __name__ == "__main__":
     args = menu()
     pth = args.path
-    if args.absolute == None:
+    if args.absolute is None:
         pth = osp.join(os.getcwd(), pth)
     Directory(pth, args.verbose).organize()
