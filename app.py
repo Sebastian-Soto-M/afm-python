@@ -55,7 +55,6 @@ class FileToMove(BaseModel):
         # if the file exists in the target destination
         target = FileModel(path=self.target, full_name=self.origin.full_name)
         info = [self.origin.name, 0]
-        target.path = join(target.path, self.origin.extension)
         while renamed := isfile(str(target)):
             info[1] += 1
             target.name = f'{info[0]}-{info[1]}'
@@ -115,7 +114,7 @@ class FileManager:
     def __init__(self, path: str, verbose: bool):
         self.config = self.__read_config()
         self.directory = Directory(self.config, path, verbose)
-        self.files_to_move = []
+        self.files_to_move: list[FileToMove] = []
 
     def __read_config(self) -> AFMConfiguration:
         config_path = Path(join(Path(__file__).parent, 'config.json'))
@@ -139,10 +138,15 @@ class FileManager:
                         origin=original,
                         target=join(
                             original.path,
-                            join(*res.split('/')[:-1])
+                            res
                         )
                     )
                 )
+
+    def persist_changes(self):
+        for ftm in self.files_to_move:
+            ftm.move()
+        self.write_changes()
 
     def read_last_changes(self):
         with sqlite3.connect(DB_PATH,
@@ -151,7 +155,11 @@ class FileManager:
             c = con.cursor()
             c.execute(f'select date,origin_path,target_path from {TBL_NAME}')
             for row in c.fetchall():
-                print(row)
+                hr = self.HistoryRow(
+                    date=row[0],
+                    original_path=row[1],
+                    current_path=row[2])
+                print(hr)
 
     def write_changes(self):
         changes = self.files_to_move
@@ -175,6 +183,21 @@ class FileManager:
                 ])
             con.commit()
 
+    @dataclass
+    class HistoryRow:
+        original_path: str
+        current_path: str
+        date: datetime
+
+        def __str__(self):
+            op = join('~', *self.original_path.split('/')[3:])
+            cp = join('~', *self.current_path.split('/')[3:])
+            return '\n'.join([
+                f'\nMoved {self.date.ctime()}',
+                f'Original path:\t{op}',
+                f'Current path:\t{cp}'
+            ])
+
 
 def menu():
     parser = argparse.ArgumentParser(description='Automatic File Manager')
@@ -196,9 +219,8 @@ def main():
         pth = join(os.getcwd(), pth)
     fm = FileManager(pth, args.verbose)
     fm.organize()
-    fm.write_changes()
-    fm.read_last_changes()
-
+    fm.persist_changes()
+    # fm.read_last_changes()
 
 
 if __name__ == '__main__':
